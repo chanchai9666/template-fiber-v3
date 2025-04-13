@@ -1,0 +1,454 @@
+definitions:
+  ArcZed_internal_entities_models.Users:
+    properties:
+      created_at:
+        description: วันที่สร้าง
+        type: string
+      created_user:
+        description: ผู้สร้าง
+        type: string
+      deleted_at:
+        allOf:
+        - $ref: '#/definitions/gorm.DeletedAt'
+        description: วันเวลาที่ลบ
+      deleted_user:
+        description: ผุ้ลบ
+        type: string
+      email:
+        description: อีเมล
+        type: string
+      id_card:
+        description: รหัสบัตรประจำตัว
+        type: string
+      is_active:
+        description: สถานะใช้งาน
+        type: integer
+      level:
+        description: ความสัมพันธ์กับ UserLevels
+        items:
+          $ref: '#/definitions/ArcZed_internal_entities_models.UsersLevels'
+        type: array
+      name:
+        description: ชื่อ
+        type: string
+      password:
+        description: ชื่อ โปรไฟล์
+        type: string
+      phone_number:
+        description: หมายเลขโทรศัพท์
+        type: string
+      sur_name:
+        description: นามสกุล
+        type: string
+      updated_at:
+        description: วันเวลาที่อัพเดทล่าสุด
+        type: string
+      updated_user:
+        description: ผู้อัพเดทล่าสุด
+        type: string
+      user_id:
+        description: ไอดี ของผู้ใช้งาน
+        type: integer
+    type: object
+  ArcZed_internal_entities_models.UsersLevels:
+    properties:
+      created_at:
+        description: วันที่สร้าง
+        type: string
+      created_user:
+        description: ผู้สร้าง
+        type: string
+      deleted_at:
+        allOf:
+        - $ref: '#/definitions/gorm.DeletedAt'
+        description: วันเวลาที่ลบ
+      deleted_user:
+        description: ผุ้ลบ
+        type: string
+      id:
+        type: integer
+      is_active:
+        description: สถานะใช้งาน
+        type: integer
+      level:
+        type: string
+      updated_at:
+        description: วันเวลาที่อัพเดทล่าสุด
+        type: string
+      updated_user:
+        description: ผู้อัพเดทล่าสุด
+        type: string
+      userID:
+        description: ต้องกำหนดประเภทและขนาดให้ตรงกับ Users.UserId
+        type: integer
+    type: object
+  ArcZed_internal_entities_schemas.AddUsers:
+    properties:
+      email:
+        description: อีเมล
+        type: string
+      id_card:
+        description: เลขบัตรประจำตัว
+        type: string
+      name:
+        description: ชื่อ
+        type: string
+      password:
+        description: รหัสผ่าน
+        type: string
+      phone_number:
+        description: เบอร์โทร
+        type: string
+      sur_name:
+        description: นามสกุล
+        type: string
+      user_id:
+        description: ผู้ใช้งาน
+        type: integer
+    required:
+    - email
+    type: object
+  ArcZed_internal_entities_schemas.HTTPError:
+    properties:
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+  ArcZed_internal_entities_schemas.LoginReq:
+    properties:
+      email:
+        description: ผู้ใช้งาน
+        example: admin@admin.com
+        type: string
+      password:
+        description: รหัสผ่าน
+        example: "1234"
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  ArcZed_internal_entities_schemas.LoginResp:
+    properties:
+      access_token:
+        description: Token เข้าใช้งาน
+        type: string
+      user:
+        allOf:
+        - $ref: '#/definitions/ArcZed_internal_entities_schemas.UserResp'
+        description: ข้อมูลผู้ใช้
+    type: object
+  ArcZed_internal_entities_schemas.RefreshTokenReq:
+    properties:
+      email:
+        description: อีเมล
+        type: string
+      user_id:
+        description: ผู้ใช้งาน
+        type: integer
+    required:
+    - email
+    - user_id
+    type: object
+  ArcZed_internal_entities_schemas.UserResp:
+    properties:
+      email:
+        description: อีเมล
+        type: string
+      level:
+        description: เลเวล
+        items:
+          type: string
+        type: array
+      name:
+        description: ชื่อ
+        type: string
+      sur_name:
+        description: นามสกุล
+        type: string
+      user_id:
+        description: ผู้ใช้งาน
+        type: integer
+    type: object
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+info:
+  contact: {}
+paths:
+  /api/auth/refreshToken:
+    post:
+      consumes:
+      - application/json
+      description: Refresh เพื่อขอ Token เข้าใช้งานระบบใหม่
+      parameters:
+      - default: th
+        description: (en, th)
+        in: header
+        name: Accept-Language
+        type: string
+      - description: request body
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/ArcZed_internal_entities_schemas.RefreshTokenReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ArcZed_internal_entities_schemas.LoginResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ArcZed_internal_entities_schemas.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: ขอ Token เข้าใช้งานระบบใหม่
+      tags:
+      - Auth
+  /api/login:
+    post:
+      consumes:
+      - application/json
+      description: Login เข้าใช้งานสำหรับขอ token
+      parameters:
+      - default: th
+        description: (en, th)
+        in: header
+        name: Accept-Language
+        type: string
+      - description: ' request body '
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/ArcZed_internal_entities_schemas.LoginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ArcZed_internal_entities_schemas.LoginResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ArcZed_internal_entities_schemas.HTTPError'
+      summary: Login เข้าใช้งาน
+      tags:
+      - Auth
+  /api/users:
+    get:
+      consumes:
+      - application/json
+      description: Show User ตามเงื่อนไข
+      parameters:
+      - default: th
+        description: (en, th)
+        in: header
+        name: Accept-Language
+        type: string
+      - description: อีเมล
+        in: query
+        name: email
+        type: string
+      - description: ชื่อ
+        in: query
+        name: name
+        type: string
+      - description: นามสกุล
+        in: query
+        name: sur_name
+        type: string
+      - description: ผู้ใช้งาน
+        in: query
+        name: user_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ArcZed_internal_entities_models.Users'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ArcZed_internal_entities_schemas.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: ค้นหา User ตามเงื่อนไข
+      tags:
+      - Users
+  /api/users/{user_id}:
+    get:
+      consumes:
+      - application/json
+      description: Show User ตาม UserId
+      parameters:
+      - default: th
+        description: (en, th)
+        in: header
+        name: Accept-Language
+        type: string
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ArcZed_internal_entities_models.Users'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ArcZed_internal_entities_schemas.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: ค้นหา User ตาม UserId
+      tags:
+      - Users
+  /api/users/createUsers:
+    post:
+      consumes:
+      - application/json
+      description: เพิ่มข้อมูล User
+      parameters:
+      - default: th
+        description: (en, th)
+        in: header
+        name: Accept-Language
+        type: string
+      - description: ' request body '
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/ArcZed_internal_entities_schemas.AddUsers'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ArcZed_internal_entities_schemas.HTTPError'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ArcZed_internal_entities_schemas.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: เพิ่มข้อมูล User
+      tags:
+      - Users
+  /api/users/deleteUsers/{user_id}:
+    delete:
+      consumes:
+      - application/json
+      description: ลบข้อมูล User
+      parameters:
+      - default: th
+        description: (en, th)
+        in: header
+        name: Accept-Language
+        type: string
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ArcZed_internal_entities_schemas.HTTPError'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ArcZed_internal_entities_schemas.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: ลบข้อมูล User
+      tags:
+      - Users
+  /api/users/updateUsers:
+    post:
+      consumes:
+      - application/json
+      description: แก้ไขข้อมูล User
+      parameters:
+      - default: th
+        description: (en, th)
+        in: header
+        name: Accept-Language
+        type: string
+      - description: ' request body '
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/ArcZed_internal_entities_schemas.AddUsers'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ArcZed_internal_entities_schemas.HTTPError'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ArcZed_internal_entities_schemas.HTTPError'
+      security:
+      - BearerAuth: []
+      summary: แก้ไขข้อมูล User
+      tags:
+      - Users
+  /api/users/usersAll:
+    get:
+      consumes:
+      - application/json
+      description: Show User ทั้งหมด
+      parameters:
+      - default: th
+        description: (en, th)
+        in: header
+        name: Accept-Language
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ArcZed_internal_entities_models.Users'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ArcZed_internal_entities_schemas.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: ค้นหา User ทั้งหมด
+      tags:
+      - Users
+securityDefinitions:
+  ApiKeyAuth:
+    in: ใส่ค่า Bearer เว้นวรรคและตามด้วย TOKEN  ex(Bearer ?????????)
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
