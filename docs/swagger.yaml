@@ -1,5 +1,13 @@
 definitions:
-  ArcZed_internal_entities_models.Users:
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+  template-fiber-v3_internal_entities_models.Users:
     properties:
       created_at:
         description: วันที่สร้าง
@@ -26,7 +34,7 @@ definitions:
       level:
         description: ความสัมพันธ์กับ UserLevels
         items:
-          $ref: '#/definitions/ArcZed_internal_entities_models.UsersLevels'
+          $ref: '#/definitions/template-fiber-v3_internal_entities_models.UsersLevels'
         type: array
       name:
         description: ชื่อ
@@ -50,7 +58,7 @@ definitions:
         description: ไอดี ของผู้ใช้งาน
         type: integer
     type: object
-  ArcZed_internal_entities_models.UsersLevels:
+  template-fiber-v3_internal_entities_models.UsersLevels:
     properties:
       created_at:
         description: วันที่สร้าง
@@ -82,7 +90,7 @@ definitions:
         description: ต้องกำหนดประเภทและขนาดให้ตรงกับ Users.UserId
         type: integer
     type: object
-  ArcZed_internal_entities_schemas.AddUsers:
+  template-fiber-v3_internal_entities_schemas.AddUsers:
     properties:
       email:
         description: อีเมล
@@ -108,14 +116,14 @@ definitions:
     required:
     - email
     type: object
-  ArcZed_internal_entities_schemas.HTTPError:
+  template-fiber-v3_internal_entities_schemas.HTTPError:
     properties:
       message:
         type: string
       status:
         type: string
     type: object
-  ArcZed_internal_entities_schemas.LoginReq:
+  template-fiber-v3_internal_entities_schemas.LoginReq:
     properties:
       email:
         description: ผู้ใช้งาน
@@ -129,17 +137,17 @@ definitions:
     - email
     - password
     type: object
-  ArcZed_internal_entities_schemas.LoginResp:
+  template-fiber-v3_internal_entities_schemas.LoginResp:
     properties:
       access_token:
         description: Token เข้าใช้งาน
         type: string
       user:
         allOf:
-        - $ref: '#/definitions/ArcZed_internal_entities_schemas.UserResp'
+        - $ref: '#/definitions/template-fiber-v3_internal_entities_schemas.UserResp'
         description: ข้อมูลผู้ใช้
     type: object
-  ArcZed_internal_entities_schemas.RefreshTokenReq:
+  template-fiber-v3_internal_entities_schemas.RefreshTokenReq:
     properties:
       email:
         description: อีเมล
@@ -151,7 +159,7 @@ definitions:
     - email
     - user_id
     type: object
-  ArcZed_internal_entities_schemas.UserResp:
+  template-fiber-v3_internal_entities_schemas.UserResp:
     properties:
       email:
         description: อีเมล
@@ -171,14 +179,6 @@ definitions:
         description: ผู้ใช้งาน
         type: integer
     type: object
-  gorm.DeletedAt:
-    properties:
-      time:
-        type: string
-      valid:
-        description: Valid is true if Time is not NULL
-        type: boolean
-    type: object
 info:
   contact: {}
 paths:
@@ -197,18 +197,18 @@ paths:
         in: body
         name: request
         schema:
-          $ref: '#/definitions/ArcZed_internal_entities_schemas.RefreshTokenReq'
+          $ref: '#/definitions/template-fiber-v3_internal_entities_schemas.RefreshTokenReq'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ArcZed_internal_entities_schemas.LoginResp'
+            $ref: '#/definitions/template-fiber-v3_internal_entities_schemas.LoginResp'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/ArcZed_internal_entities_schemas.HTTPError'
+            $ref: '#/definitions/template-fiber-v3_internal_entities_schemas.HTTPError'
       security:
       - ApiKeyAuth: []
       summary: ขอ Token เข้าใช้งานระบบใหม่
@@ -229,18 +229,18 @@ paths:
         in: body
         name: request
         schema:
-          $ref: '#/definitions/ArcZed_internal_entities_schemas.LoginReq'
+          $ref: '#/definitions/template-fiber-v3_internal_entities_schemas.LoginReq'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ArcZed_internal_entities_schemas.LoginResp'
+            $ref: '#/definitions/template-fiber-v3_internal_entities_schemas.LoginResp'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/ArcZed_internal_entities_schemas.HTTPError'
+            $ref: '#/definitions/template-fiber-v3_internal_entities_schemas.HTTPError'
       summary: Login เข้าใช้งาน
       tags:
       - Auth
@@ -278,15 +278,46 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/ArcZed_internal_entities_models.Users'
+              $ref: '#/definitions/template-fiber-v3_internal_entities_models.Users'
             type: array
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/ArcZed_internal_entities_schemas.HTTPError'
+            $ref: '#/definitions/template-fiber-v3_internal_entities_schemas.HTTPError'
       security:
       - ApiKeyAuth: []
       summary: ค้นหา User ตามเงื่อนไข
+      tags:
+      - Users
+    post:
+      consumes:
+      - application/json
+      description: เพิ่มข้อมูล User
+      parameters:
+      - default: th
+        description: (en, th)
+        in: header
+        name: Accept-Language
+        type: string
+      - description: ' request body '
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/template-fiber-v3_internal_entities_schemas.AddUsers'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/template-fiber-v3_internal_entities_schemas.HTTPError'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/template-fiber-v3_internal_entities_schemas.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: เพิ่มข้อมูล User
       tags:
       - Users
   /api/users/{user_id}:
@@ -311,46 +342,43 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ArcZed_internal_entities_models.Users'
+            $ref: '#/definitions/template-fiber-v3_internal_entities_models.Users'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/ArcZed_internal_entities_schemas.HTTPError'
+            $ref: '#/definitions/template-fiber-v3_internal_entities_schemas.HTTPError'
       security:
       - ApiKeyAuth: []
       summary: ค้นหา User ตาม UserId
       tags:
       - Users
-  /api/users/createUsers:
-    post:
+  /api/users/all:
+    get:
       consumes:
       - application/json
-      description: เพิ่มข้อมูล User
+      description: Show User ทั้งหมด
       parameters:
       - default: th
         description: (en, th)
         in: header
         name: Accept-Language
         type: string
-      - description: ' request body '
-        in: body
-        name: request
-        schema:
-          $ref: '#/definitions/ArcZed_internal_entities_schemas.AddUsers'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ArcZed_internal_entities_schemas.HTTPError'
+            items:
+              $ref: '#/definitions/template-fiber-v3_internal_entities_models.Users'
+            type: array
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/ArcZed_internal_entities_schemas.HTTPError'
+            $ref: '#/definitions/template-fiber-v3_internal_entities_schemas.HTTPError'
       security:
       - ApiKeyAuth: []
-      summary: เพิ่มข้อมูล User
+      summary: ค้นหา User ทั้งหมด
       tags:
       - Users
   /api/users/deleteUsers/{user_id}:
@@ -375,11 +403,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ArcZed_internal_entities_schemas.HTTPError'
+            $ref: '#/definitions/template-fiber-v3_internal_entities_schemas.HTTPError'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/ArcZed_internal_entities_schemas.HTTPError'
+            $ref: '#/definitions/template-fiber-v3_internal_entities_schemas.HTTPError'
       security:
       - ApiKeyAuth: []
       summary: ลบข้อมูล User
@@ -400,50 +428,21 @@ paths:
         in: body
         name: request
         schema:
-          $ref: '#/definitions/ArcZed_internal_entities_schemas.AddUsers'
+          $ref: '#/definitions/template-fiber-v3_internal_entities_schemas.AddUsers'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ArcZed_internal_entities_schemas.HTTPError'
+            $ref: '#/definitions/template-fiber-v3_internal_entities_schemas.HTTPError'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/ArcZed_internal_entities_schemas.HTTPError'
+            $ref: '#/definitions/template-fiber-v3_internal_entities_schemas.HTTPError'
       security:
       - BearerAuth: []
       summary: แก้ไขข้อมูล User
-      tags:
-      - Users
-  /api/users/usersAll:
-    get:
-      consumes:
-      - application/json
-      description: Show User ทั้งหมด
-      parameters:
-      - default: th
-        description: (en, th)
-        in: header
-        name: Accept-Language
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/ArcZed_internal_entities_models.Users'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/ArcZed_internal_entities_schemas.HTTPError'
-      security:
-      - ApiKeyAuth: []
-      summary: ค้นหา User ทั้งหมด
       tags:
       - Users
 securityDefinitions:

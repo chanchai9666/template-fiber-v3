@@ -1,7 +1,6 @@
 package usecases
 
 import (
-	"errors"
 	"strings"
 
 	"github.com/chanchai9666/aider"
@@ -22,12 +21,16 @@ func (s *userRequest) FindUsers(c fiber.Ctx, req *schemas.FindUsersReq) ([]model
 
 // FindUsersByEmail ค้นหาผู้ใช้งานตามอีเมล
 func (s *userRequest) FindUsersByEmail(c fiber.Ctx, req *schemas.FindUsersByEmailReq) (*models.Users, error) {
+	if req.Email == "" {
+		return nil, aider.NewError(aider.ErrBadRequest, "กรุณาระบุอีเมล")
+	}
+
 	data, err := s.FindUsers(c, &schemas.FindUsersReq{Email: req.Email})
 	if err != nil {
 		return nil, err
 	}
 	if len(data) == 0 {
-		return nil, errors.New("user not found")
+		return nil, aider.NewError(aider.ErrNotFound, "ไม่พบข้อมูล")
 	}
 	return &data[0], nil
 }
@@ -149,4 +152,19 @@ func (s *userRequest) RefreshToken(c fiber.Ctx, req *schemas.RefreshTokenReq) (*
 	aider.DDD(userLogin)
 	return &userLogin, nil
 
+}
+
+func (s *userRequest) FindByUserID(c fiber.Ctx, req *schemas.FindByUserIDReq) (*models.Users, error) {
+	if req.UserID == "" {
+		return nil, aider.NewError(aider.ErrBadRequest, "กรุณาระบุ UserID")
+	}
+
+	data, err := s.FindUsers(c, &schemas.FindUsersReq{UserId: req.UserID})
+	if err != nil {
+		return nil, err
+	}
+	if len(data) == 0 {
+		return nil, aider.NewError(aider.ErrNotFound, "ไม่พบข้อมูล")
+	}
+	return &data[0], nil
 }

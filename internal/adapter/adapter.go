@@ -41,8 +41,9 @@ func NewSuccessMessage() *Message {
 }
 
 func RespJson(c fiber.Ctx, fn interface{}, input interface{}) error {
+
 	// ตรวจสอบและดึงข้อมูลจาก request ตาม content type
-	if err := parseInputData(c, input); err != nil {
+	if err := ParseInputData(c, input); err != nil {
 		return RenderJSON(c, err, nil)
 
 	}
@@ -116,7 +117,7 @@ func RespJsonNoReq(c fiber.Ctx, fn interface{}) error {
 
 func RespSuccess(c fiber.Ctx, fn interface{}, input interface{}) error {
 	// ตรวจสอบและดึงข้อมูลจาก request ตาม content type
-	if err := parseInputData(c, input); err != nil {
+	if err := ParseInputData(c, input); err != nil {
 		return RenderJSON(c, err, nil)
 
 	}
@@ -191,6 +192,121 @@ func parseInputData(c fiber.Ctx, input interface{}) error {
 		field := val.FieldByName(toPascalCase(name))
 		if field.IsValid() && field.CanSet() {
 			field.SetString(value)
+		}
+	}
+
+	return nil
+}
+
+// func ParseInputData(c fiber.Ctx, input interface{}) error {
+// 	inputVal := reflect.ValueOf(input)
+// 	if inputVal.Kind() != reflect.Ptr || inputVal.IsNil() {
+// 		return fmt.Errorf("input must be a non-nil pointer")
+// 	}
+// 	inputVal = inputVal.Elem()
+// 	inputType := inputVal.Type()
+
+// 	// 1. Path Params
+// 	for i := 0; i < inputVal.NumField(); i++ {
+// 		field := inputVal.Field(i)
+// 		structField := inputType.Field(i)
+
+// 		tag := structField.Tag.Get("params")
+// 		if tag != "" {
+// 			value := c.Params(tag)
+// 			if field.CanSet() {
+// 				field.SetString(value)
+// 			}
+// 		}
+// 	}
+
+// 	// 2. Query Params
+// 	for i := 0; i < inputVal.NumField(); i++ {
+// 		field := inputVal.Field(i)
+// 		structField := inputType.Field(i)
+
+// 		tag := structField.Tag.Get("query")
+// 		if tag != "" {
+// 			value := c.Query(tag)
+// 			if field.CanSet() {
+// 				field.SetString(value)
+// 			}
+// 		}
+// 	}
+
+// 	// 3. JSON Body
+// 	contentType := c.Get("Content-Type")
+// 	if strings.Contains(contentType, "application/json") {
+// 		if err := c.Bind().Body(input); err != nil {
+// 			return fmt.Errorf("failed to parse JSON body: %v", err)
+// 		}
+// 	}
+
+// 	// 4. Form Data
+// 	if strings.Contains(contentType, "multipart/form-data") {
+// 		form, err := c.MultipartForm()
+// 		if err != nil {
+// 			return fmt.Errorf("failed to parse form-data: %v", err)
+// 		}
+
+// 		for i := 0; i < inputVal.NumField(); i++ {
+// 			field := inputVal.Field(i)
+// 			structField := inputType.Field(i)
+
+// 			tag := structField.Tag.Get("form")
+// 			if tag != "" {
+// 				if val, ok := form.Value[tag]; ok && len(val) > 0 {
+// 					if field.CanSet() {
+// 						field.SetString(val[0])
+// 					}
+// 				}
+// 			}
+// 		}
+// 	}
+
+// 	return nil
+// }
+
+func ParseInputData(c fiber.Ctx, input interface{}) error {
+	b := c.Bind()
+
+	inputVal := reflect.ValueOf(input)
+	if inputVal.Kind() != reflect.Ptr || inputVal.IsNil() {
+		return fmt.Errorf("input must be a non-nil pointer")
+	}
+	inputVal = inputVal.Elem()
+	inputType := inputVal.Type()
+
+	// 1. Path Params
+	for i := 0; i < inputVal.NumField(); i++ {
+		field := inputVal.Field(i)
+		structField := inputType.Field(i)
+
+		tag := structField.Tag.Get("params")
+		if tag != "" {
+			value := c.Params(tag)
+			if field.CanSet() {
+				field.SetString(value)
+			}
+		}
+	}
+
+	// ดึงข้อมูลจาก Query Params
+	if err := b.Query(input); err != nil {
+		return fmt.Errorf("failed to bind query: %w", err)
+	}
+
+	// ดึงข้อมูลจาก Body
+	contentType := c.Get("Content-Type")
+	switch {
+	case strings.HasPrefix(contentType, "application/json"):
+		if err := b.Body(input); err != nil {
+			return fmt.Errorf("failed to bind json body: %w", err)
+		}
+
+	case strings.HasPrefix(contentType, "multipart/form-data"):
+		if err := b.Form(input); err != nil {
+			return fmt.Errorf("failed to bind form-data: %w", err)
 		}
 	}
 

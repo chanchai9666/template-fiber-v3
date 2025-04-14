@@ -13,7 +13,6 @@ import (
 	"github.com/gofiber/fiber/v3/middleware/cors"
 	"github.com/gofiber/fiber/v3/middleware/logger"
 	"github.com/gofiber/fiber/v3/middleware/recover"
-	"github.com/gofiber/fiber/v3/middleware/requestid"
 )
 
 // RegisterFiberRoutes registers all routes for the Fiber server
@@ -43,33 +42,40 @@ func (s *FiberServer) RegisterFiberRoutes() {
 	}))
 	s.App.Use(recover.New())
 
-	s.App.Use(requestid.New())
-	s.App.Use(middleware.LogRequestMiddleware()) // Custom middleware for logging requests
+	// s.App.Use(requestid.New())
+	// s.App.Use(middleware.LogRequestMiddleware()) // Custom middleware for logging requests
 	s.App.Use(logger.New(logger.Config{
 		Format: logger.ConfigDefault.Format,
 	}))
 	jwtAuth := middleware.AuthMiddleware(s.config.JwtSECRETKEY) // JWT Authentication middleware
 
+	// Group base path
 	api := s.App.Group("/api")
+
+	// Swagger UI (optional)
 	if s.config.SwagStatus {
-		api.Get("/docs/*", swagger.HandlerDefault) // Swagger UI
+		api.Get("/docs/*", swagger.HandlerDefault)
 	}
 
+	// Init dependencies
+	userRepo := repositories.NewUsersRepository(s.db.DB(), s.config)
+	userService := usecases.NewUserService(userRepo)
+	userHandler := handlers.NewUserHandler(userService) // <- เปลี่ยนชื่อให้สอดคล้อง
+
+	// Health check & login
+	api.Get("/health", s.healthHandler)
+	api.Post("/login", userHandler.Login)
+
+	// Auth group (require JWT)
 	auth := api.Group("/auth", jwtAuth)
-	_ = auth
-	userRep := repositories.NewUsersRepository(s.db.DB(), s.config) // User repository
-	userService := usecases.NewUserService(userRep)                 // User service
-	userEndpoint := handlers.NewUserEndPoint(userService)           // User endpoint
+	auth.Post("/refreshToken", userHandler.RefreshToken)
 
-	api.Get("/", userEndpoint.FindUser)
-	api.Get("/health", s.healthHandler)                   // Health check database
-	api.Post("/login", userEndpoint.Login)                // Login endpoint
-	auth.Post("/refreshToken", userEndpoint.RefreshToken) // Refresh token endpoint
-
-	api.Post("/users", userEndpoint.CreateUsers)               // Create user
-	api.Get("/users", userEndpoint.FindUser)                   // Find user by query parameters
-	api.Get("/users/:user_id", userEndpoint.FindUsersByUserId) // Find user by user ID
-	api.Get("/users/usersAll", userEndpoint.FindUserAll)       // Find all users
+	// Users group
+	users := api.Group("/users")
+	users.Post("/", userHandler.CreateUsers)               // Create user
+	users.Get("/", userHandler.FindUser)                   // Find users by filters
+	users.Get("/all", userHandler.FindAllUsers)            // Find all
+	users.Get("/:user_id<\\d+>", userHandler.FindByUserID) // Find by ID (Match แค่ตัวเลขเท่านั้น เช่น /api/users/123)
 
 }
 

@@ -1,13 +1,13 @@
 package schemas
 
 type AddUsers struct {
-	UserId      uint64 `json:"user_id"`                  //ผู้ใช้งาน
-	Email       string `json:"email" binding:"required"` //อีเมล
-	Password    string `json:"password"`                 //รหัสผ่าน
-	Name        string `json:"name"`                     //ชื่อ
-	SurName     string `json:"sur_name"`                 //นามสกุล
-	PhoneNumber string `json:"phone_number"`             //เบอร์โทร
-	IdCard      string `json:"id_card"`                  //เลขบัตรประจำตัว
+	UserId      uint64 `json:"user_id"`                   //ผู้ใช้งาน
+	Email       string `json:"email" validate:"required"` //อีเมล
+	Password    string `json:"password"`                  //รหัสผ่าน
+	Name        string `json:"name"`                      //ชื่อ
+	SurName     string `json:"sur_name"`                  //นามสกุล
+	PhoneNumber string `json:"phone_number"`              //เบอร์โทร
+	IdCard      string `json:"id_card"`                   //เลขบัตรประจำตัว
 }
 
 type FindUsersReq struct {
@@ -18,7 +18,11 @@ type FindUsersReq struct {
 }
 
 type FindUsersByEmailReq struct {
-	Email string `json:"email" query:"email"` //ผู้ใช้งาน
+	Email string `json:"email" query:"email" ` //ผู้ใช้งาน
+}
+
+type FindByUserIDReq struct {
+	UserID string `params:"user_id" json:"user_id" query:"user_id"` //ผู้ใช้งาน
 }
 
 type ValueReq struct {
@@ -26,8 +30,8 @@ type ValueReq struct {
 }
 
 type LoginReq struct {
-	Email    string `json:"email" binding:"required"  example:"admin@admin.com"` //ผู้ใช้งาน
-	Password string `json:"password" binding:"required"  example:"1234"`         //รหัสผ่าน
+	Email    string `json:"email" validate:"required"  example:"admin@admin.com"` //ผู้ใช้งาน
+	Password string `json:"password" validate:"required"  example:"1234"`         //รหัสผ่าน
 }
 
 type UserResp struct {
@@ -52,6 +56,6 @@ type JwtReq struct {
 }
 
 type RefreshTokenReq struct {
-	UserId uint64 `json:"user_id" binding:"required"` //ผู้ใช้งาน
-	Email  string `json:"email" binding:"required"`   //อีเมล
+	UserId uint64 `json:"user_id" validate:"required"` //ผู้ใช้งาน
+	Email  string `json:"email" validate:"required"`   //อีเมล
 }

@@ -13,6 +13,7 @@ type UsersService interface {
 	FindUsersAll() ([]models.Users, error)                                                 // ค้นหาผู้ใช้งานทั้งหมด
 	CreateUsers(c fiber.Ctx, req *schemas.AddUsers) error                                  // สร้างผู้ใช้งาน
 	FindUsersByEmail(c fiber.Ctx, req *schemas.FindUsersByEmailReq) (*models.Users, error) // ค้นหาผู้ใช้งานตามอีเมล
+	FindByUserID(c fiber.Ctx, req *schemas.FindByUserIDReq) (*models.Users, error)         // ค้นหาผู้ใช้งานตาม UserId
 	UpdateUsers(c fiber.Ctx, req *schemas.AddUsers) error                                  // อัพเดตผู้ใช้งาน
 	DeleteUsers(c fiber.Ctx, req *schemas.AddUsers) error                                  // ลบผู้ใช้งาน
 	Login(c fiber.Ctx, req *schemas.LoginReq) (*schemas.LoginResp, error)                  // ล็อกอิน

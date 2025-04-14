@@ -46,7 +46,7 @@ const docTemplate = `{
                         "name": "request",
                         "in": "body",
                         "schema": {
-                            "$ref": "#/definitions/ArcZed_internal_entities_schemas.RefreshTokenReq"
+                            "$ref": "#/definitions/template-fiber-v3_internal_entities_schemas.RefreshTokenReq"
                         }
                     }
                 ],
@@ -54,13 +54,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ArcZed_internal_entities_schemas.LoginResp"
+                            "$ref": "#/definitions/template-fiber-v3_internal_entities_schemas.LoginResp"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/ArcZed_internal_entities_schemas.HTTPError"
+                            "$ref": "#/definitions/template-fiber-v3_internal_entities_schemas.HTTPError"
                         }
                     }
                 }
@@ -92,7 +92,7 @@ const docTemplate = `{
                         "name": "request",
                         "in": "body",
                         "schema": {
-                            "$ref": "#/definitions/ArcZed_internal_entities_schemas.LoginReq"
+                            "$ref": "#/definitions/template-fiber-v3_internal_entities_schemas.LoginReq"
                         }
                     }
                 ],
@@ -100,13 +100,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ArcZed_internal_entities_schemas.LoginResp"
+                            "$ref": "#/definitions/template-fiber-v3_internal_entities_schemas.LoginResp"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/ArcZed_internal_entities_schemas.HTTPError"
+                            "$ref": "#/definitions/template-fiber-v3_internal_entities_schemas.HTTPError"
                         }
                     }
                 }
@@ -169,20 +169,18 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/ArcZed_internal_entities_models.Users"
+                                "$ref": "#/definitions/template-fiber-v3_internal_entities_models.Users"
                             }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/ArcZed_internal_entities_schemas.HTTPError"
+                            "$ref": "#/definitions/template-fiber-v3_internal_entities_schemas.HTTPError"
                         }
                     }
                 }
-            }
-        },
-        "/api/users/createUsers": {
+            },
             "post": {
                 "security": [
                     {
@@ -213,7 +211,7 @@ const docTemplate = `{
                         "name": "request",
                         "in": "body",
                         "schema": {
-                            "$ref": "#/definitions/ArcZed_internal_entities_schemas.AddUsers"
+                            "$ref": "#/definitions/template-fiber-v3_internal_entities_schemas.AddUsers"
                         }
                     }
                 ],
@@ -221,13 +219,59 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ArcZed_internal_entities_schemas.HTTPError"
+                            "$ref": "#/definitions/template-fiber-v3_internal_entities_schemas.HTTPError"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/ArcZed_internal_entities_schemas.HTTPError"
+                            "$ref": "#/definitions/template-fiber-v3_internal_entities_schemas.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/all": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Show User ทั้งหมด",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "ค้นหา User ทั้งหมด",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "th",
+                        "description": "(en, th)",
+                        "name": "Accept-Language",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/template-fiber-v3_internal_entities_models.Users"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/template-fiber-v3_internal_entities_schemas.HTTPError"
                         }
                     }
                 }
@@ -271,13 +315,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ArcZed_internal_entities_schemas.HTTPError"
+                            "$ref": "#/definitions/template-fiber-v3_internal_entities_schemas.HTTPError"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/ArcZed_internal_entities_schemas.HTTPError"
+                            "$ref": "#/definitions/template-fiber-v3_internal_entities_schemas.HTTPError"
                         }
                     }
                 }
@@ -314,7 +358,7 @@ const docTemplate = `{
                         "name": "request",
                         "in": "body",
                         "schema": {
-                            "$ref": "#/definitions/ArcZed_internal_entities_schemas.AddUsers"
+                            "$ref": "#/definitions/template-fiber-v3_internal_entities_schemas.AddUsers"
                         }
                     }
                 ],
@@ -322,59 +366,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ArcZed_internal_entities_schemas.HTTPError"
+                            "$ref": "#/definitions/template-fiber-v3_internal_entities_schemas.HTTPError"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/ArcZed_internal_entities_schemas.HTTPError"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/users/usersAll": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Show User ทั้งหมด",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Users"
-                ],
-                "summary": "ค้นหา User ทั้งหมด",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "th",
-                        "description": "(en, th)",
-                        "name": "Accept-Language",
-                        "in": "header"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/ArcZed_internal_entities_models.Users"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/ArcZed_internal_entities_schemas.HTTPError"
+                            "$ref": "#/definitions/template-fiber-v3_internal_entities_schemas.HTTPError"
                         }
                     }
                 }
@@ -418,13 +416,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ArcZed_internal_entities_models.Users"
+                            "$ref": "#/definitions/template-fiber-v3_internal_entities_models.Users"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/ArcZed_internal_entities_schemas.HTTPError"
+                            "$ref": "#/definitions/template-fiber-v3_internal_entities_schemas.HTTPError"
                         }
                     }
                 }
@@ -432,7 +430,19 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "ArcZed_internal_entities_models.Users": {
+        "gorm.DeletedAt": {
+            "type": "object",
+            "properties": {
+                "time": {
+                    "type": "string"
+                },
+                "valid": {
+                    "description": "Valid is true if Time is not NULL",
+                    "type": "boolean"
+                }
+            }
+        },
+        "template-fiber-v3_internal_entities_models.Users": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -471,7 +481,7 @@ const docTemplate = `{
                     "description": "ความสัมพันธ์กับ UserLevels",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/ArcZed_internal_entities_models.UsersLevels"
+                        "$ref": "#/definitions/template-fiber-v3_internal_entities_models.UsersLevels"
                     }
                 },
                 "name": {
@@ -504,7 +514,7 @@ const docTemplate = `{
                 }
             }
         },
-        "ArcZed_internal_entities_models.UsersLevels": {
+        "template-fiber-v3_internal_entities_models.UsersLevels": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -551,7 +561,7 @@ const docTemplate = `{
                 }
             }
         },
-        "ArcZed_internal_entities_schemas.AddUsers": {
+        "template-fiber-v3_internal_entities_schemas.AddUsers": {
             "type": "object",
             "required": [
                 "email"
@@ -587,7 +597,7 @@ const docTemplate = `{
                 }
             }
         },
-        "ArcZed_internal_entities_schemas.HTTPError": {
+        "template-fiber-v3_internal_entities_schemas.HTTPError": {
             "type": "object",
             "properties": {
                 "message": {
@@ -598,7 +608,7 @@ const docTemplate = `{
                 }
             }
         },
-        "ArcZed_internal_entities_schemas.LoginReq": {
+        "template-fiber-v3_internal_entities_schemas.LoginReq": {
             "type": "object",
             "required": [
                 "email",
@@ -617,7 +627,7 @@ const docTemplate = `{
                 }
             }
         },
-        "ArcZed_internal_entities_schemas.LoginResp": {
+        "template-fiber-v3_internal_entities_schemas.LoginResp": {
             "type": "object",
             "properties": {
                 "access_token": {
@@ -628,13 +638,13 @@ const docTemplate = `{
                     "description": "ข้อมูลผู้ใช้",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/ArcZed_internal_entities_schemas.UserResp"
+                            "$ref": "#/definitions/template-fiber-v3_internal_entities_schemas.UserResp"
                         }
                     ]
                 }
             }
         },
-        "ArcZed_internal_entities_schemas.RefreshTokenReq": {
+        "template-fiber-v3_internal_entities_schemas.RefreshTokenReq": {
             "type": "object",
             "required": [
                 "email",
@@ -651,7 +661,7 @@ const docTemplate = `{
                 }
             }
         },
-        "ArcZed_internal_entities_schemas.UserResp": {
+        "template-fiber-v3_internal_entities_schemas.UserResp": {
             "type": "object",
             "properties": {
                 "email": {
@@ -676,18 +686,6 @@ const docTemplate = `{
                 "user_id": {
                     "description": "ผู้ใช้งาน",
                     "type": "integer"
-                }
-            }
-        },
-        "gorm.DeletedAt": {
-            "type": "object",
-            "properties": {
-                "time": {
-                    "type": "string"
-                },
-                "valid": {
-                    "description": "Valid is true if Time is not NULL",
-                    "type": "boolean"
                 }
             }
         }
