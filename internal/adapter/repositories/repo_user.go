@@ -12,12 +12,12 @@ import (
 	"template-fiber-v3/internal/pkg/safety"
 )
 
-func (r *dbPool) CreateUsers(req *schemas.AddUsers) error {
+func (r *dbPool) CreateUsers(req *schemas.AddUsers, userID string) error {
 	var user models.Users
 	if err := copier.Copy(&user, req); err != nil {
 		return fmt.Errorf("failed to copy user data: %w", err)
 	}
-
+	user.CreatedUser = userID
 	return Transaction(r.db, func(tx *gorm.DB) error {
 		return Insert(r.db, &user)
 	})
@@ -55,16 +55,28 @@ func (r *dbPool) UpdateUser(req *schemas.AddUsers) error {
 		return Updates(que, &users)
 	})
 }
-func (r *dbPool) DeletedUser(userID uint64) error {
+func (r *dbPool) DeletedUser(id uint64, userID string) error {
 	return Transaction(r.db, func(d *gorm.DB) error {
+		var UserLevel models.UsersLevels
 		var UserUpdate models.Users
 		// สร้างตัวแปรสำหรับอัปเดต
 		active := 0
+
+		UserLevel.IsActive = &active
+		UserLevel.UserID = id
+		UserLevel.DeletedUser = userID
+
+		if err := Delete(
+			r.db.Scopes(WhereUserId(aider.ToString(UserLevel.UserID))), &UserLevel); err != nil {
+			return err
+		}
+
 		UserUpdate.IsActive = &active
-		UserUpdate.UserId = userID
+		UserUpdate.UserId = id
+		UserUpdate.DeletedUser = userID
 		// ลบผู้ใช้
 		if err := Delete(
-			r.db.Scopes(WhereUserId(aider.ToString(userID))), &UserUpdate); err != nil {
+			r.db.Scopes(WhereUserId(aider.ToString(UserUpdate.UserId))), &UserUpdate); err != nil {
 			return err
 		}
 		return nil

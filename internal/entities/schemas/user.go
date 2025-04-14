@@ -21,7 +21,7 @@ type FindUsersByEmailReq struct {
 	Email string `json:"email" query:"email" ` //ผู้ใช้งาน
 }
 
-type FindByUserIDReq struct {
+type UserIDReq struct {
 	UserID string `params:"user_id" json:"user_id" query:"user_id"` //ผู้ใช้งาน
 }
 

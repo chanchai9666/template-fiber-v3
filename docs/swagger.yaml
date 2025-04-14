@@ -321,6 +321,37 @@ paths:
       tags:
       - Users
   /api/users/{user_id}:
+    delete:
+      consumes:
+      - application/json
+      description: ลบข้อมูล User
+      parameters:
+      - default: th
+        description: (en, th)
+        in: header
+        name: Accept-Language
+        type: string
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/template-fiber-v3_internal_entities_schemas.HTTPError'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/template-fiber-v3_internal_entities_schemas.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: ลบข้อมูล User
+      tags:
+      - Users
     get:
       consumes:
       - application/json
@@ -379,38 +410,6 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: ค้นหา User ทั้งหมด
-      tags:
-      - Users
-  /api/users/deleteUsers/{user_id}:
-    delete:
-      consumes:
-      - application/json
-      description: ลบข้อมูล User
-      parameters:
-      - default: th
-        description: (en, th)
-        in: header
-        name: Accept-Language
-        type: string
-      - description: User ID
-        in: path
-        name: user_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/template-fiber-v3_internal_entities_schemas.HTTPError'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/template-fiber-v3_internal_entities_schemas.HTTPError'
-      security:
-      - ApiKeyAuth: []
-      summary: ลบข้อมูล User
       tags:
       - Users
   /api/users/updateUsers:

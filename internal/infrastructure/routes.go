@@ -71,11 +71,12 @@ func (s *FiberServer) RegisterFiberRoutes() {
 	auth.Post("/refreshToken", userHandler.RefreshToken)
 
 	// Users group
-	users := api.Group("/users")
-	users.Post("/", userHandler.CreateUsers)               // Create user
-	users.Get("/", userHandler.FindUser)                   // Find users by filters
-	users.Get("/all", userHandler.FindAllUsers)            // Find all
-	users.Get("/:user_id<\\d+>", userHandler.FindByUserID) // Find by ID (Match แค่ตัวเลขเท่านั้น เช่น /api/users/123)
+	users := api.Group("/users", jwtAuth)
+	users.Post("/", userHandler.CreateUsers)                 // Create user
+	users.Get("/", userHandler.FindUser)                     // Find users by filters
+	users.Get("/all", userHandler.FindAllUsers)              // Find all
+	users.Get("/:user_id<\\d+>", userHandler.FindByUserID)   // Find by ID (Match แค่ตัวเลขเท่านั้น เช่น /api/users/123)
+	users.Delete("/:user_id<\\d+>", userHandler.DeleteUsers) // Delete user
 
 }
 

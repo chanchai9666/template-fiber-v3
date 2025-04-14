@@ -14,7 +14,10 @@ func AuthMiddleware(jwtSecret string) fiber.Handler {
 	return func(c fiber.Ctx) error {
 		authHeader := c.Get("Authorization")
 		if authHeader == "" {
-			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Please Login before use."})
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+				"code":    fiber.StatusUnauthorized,
+				"message": "Authentication required. Please login to continue.",
+			})
 		}
 
 		if strings.HasPrefix(authHeader, "Bearer ") {

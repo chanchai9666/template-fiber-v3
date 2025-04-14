@@ -30,10 +30,10 @@ func NewUsersRepository(db *gorm.DB, config *configs.Config) UsersRepository {
 // }
 
 type UsersRepository interface {
-	CreateUsers(req *schemas.AddUsers) error                     //เพิ่มข้อมูล Users
+	CreateUsers(req *schemas.AddUsers, userID string) error      //เพิ่มข้อมูล Users
 	FindUsers(req *schemas.FindUsersReq) ([]models.Users, error) //ค้นหาข้อมูล Users
 	UpdateUser(req *schemas.AddUsers) error                      //อัพเดตข้อมูล Users
-	DeletedUser(userID uint64) error                             //ลบข้อมูล Users
+	DeletedUser(id uint64, UserID string) error                  //ลบข้อมูล Users
 	NewJwt(req *schemas.JwtReq) (string, error)                  //สร้าง Jwt Token
 }
 

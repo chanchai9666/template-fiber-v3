@@ -44,7 +44,7 @@ func (h *userHandler) FindUser(c fiber.Ctx) error {
 // @Router /api/users/{user_id} [get]
 // @Security ApiKeyAuth
 func (h *userHandler) FindByUserID(c fiber.Ctx) error {
-	return adapter.RespJson(c, h.service.FindByUserID, &schemas.FindByUserIDReq{})
+	return adapter.RespJson(c, h.service.FindByUserID, &schemas.UserIDReq{})
 }
 
 // @Tags Users
@@ -100,10 +100,10 @@ func (h *userHandler) UpdateUsers(c fiber.Ctx) error {
 // @Param user_id path string true "User ID"
 // @Success 200 {object} schemas.HTTPError
 // @Failure 400 {object} schemas.HTTPError
-// @Router /api/users/deleteUsers/{user_id} [delete]
+// @Router /api/users/{user_id} [delete]
 // @Security ApiKeyAuth
 func (h *userHandler) DeleteUsers(c fiber.Ctx) error {
-	return adapter.RespSuccess(c, h.service.DeleteUsers, &schemas.AddUsers{})
+	return adapter.RespSuccess(c, h.service.DeleteUsers, &schemas.UserIDReq{})
 }
 
 // @Tags Auth

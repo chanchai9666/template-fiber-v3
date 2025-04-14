@@ -46,7 +46,7 @@ func (s *userRequest) FindUsersAll() ([]models.Users, error) {
 
 // CreateUsers สร้างผู้ใช้งาน
 func (s *userRequest) CreateUsers(c fiber.Ctx, req *schemas.AddUsers) error {
-	return s.repo.CreateUsers(req)
+	return s.repo.CreateUsers(req, GetUserID(c))
 }
 
 // UpdateUsers อัพเดตผู้ใช้งาน
@@ -55,8 +55,8 @@ func (s *userRequest) UpdateUsers(c fiber.Ctx, req *schemas.AddUsers) error {
 }
 
 // DeleteUsers ลบผู้ใช้งาน
-func (s *userRequest) DeleteUsers(c fiber.Ctx, req *schemas.AddUsers) error {
-	return s.repo.DeletedUser(req.UserId)
+func (s *userRequest) DeleteUsers(c fiber.Ctx, req *schemas.UserIDReq) error {
+	return s.repo.DeletedUser(aider.ToUint64(req.UserID), GetUserID(c))
 }
 
 // Login ล็อกอิน
@@ -154,7 +154,7 @@ func (s *userRequest) RefreshToken(c fiber.Ctx, req *schemas.RefreshTokenReq) (*
 
 }
 
-func (s *userRequest) FindByUserID(c fiber.Ctx, req *schemas.FindByUserIDReq) (*models.Users, error) {
+func (s *userRequest) FindByUserID(c fiber.Ctx, req *schemas.UserIDReq) (*models.Users, error) {
 	if req.UserID == "" {
 		return nil, aider.NewError(aider.ErrBadRequest, "กรุณาระบุ UserID")
 	}

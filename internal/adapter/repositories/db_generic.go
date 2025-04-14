@@ -95,7 +95,7 @@ func Updates[T any](db *gorm.DB, data *T) error {
 
 func Delete[T any](db *gorm.DB, data *T) error {
 
-	tx := db.Select("is_active").Updates(data)
+	tx := db.Select("is_active", "deleted_user").Updates(data)
 	if tx.Error != nil {
 		return tx.Error
 	}

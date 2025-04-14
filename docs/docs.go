@@ -277,56 +277,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/users/deleteUsers/{user_id}": {
-            "delete": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "ลบข้อมูล User",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Users"
-                ],
-                "summary": "ลบข้อมูล User",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "th",
-                        "description": "(en, th)",
-                        "name": "Accept-Language",
-                        "in": "header"
-                    },
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "user_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/template-fiber-v3_internal_entities_schemas.HTTPError"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/template-fiber-v3_internal_entities_schemas.HTTPError"
-                        }
-                    }
-                }
-            }
-        },
         "/api/users/updateUsers": {
             "post": {
                 "security": [
@@ -417,6 +367,54 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/template-fiber-v3_internal_entities_models.Users"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/template-fiber-v3_internal_entities_schemas.HTTPError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "ลบข้อมูล User",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "ลบข้อมูล User",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "th",
+                        "description": "(en, th)",
+                        "name": "Accept-Language",
+                        "in": "header"
+                    },
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/template-fiber-v3_internal_entities_schemas.HTTPError"
                         }
                     },
                     "400": {
